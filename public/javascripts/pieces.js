@@ -167,7 +167,7 @@ class Piece {
     this.rotation = 0;
     this.lockoutTime = 9999999;
     this.softDrop = false;
-    this.baseStepTime = 60 - difficulty * 2;
+    this.baseStepTime = 60 - difficulty * 4;
     this.stepTime = this.baseStepTime;
     this.hardDropPosition = [0, 0];
     this.locked = false;
@@ -263,7 +263,7 @@ class Piece {
   }
   startSoftDrop() {
     this.softDrop = true;
-    this.stepTime = 5;
+    this.stepTime = 3;
   }
   stopSoftDrop() {
     this.softDrop = false;

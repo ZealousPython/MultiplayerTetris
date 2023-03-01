@@ -3,6 +3,8 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+const axios = require("axios");
+const router = express.Router();
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
@@ -16,5 +18,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+
+app.post('/test',(req,res)=>{
+    
+    console.log(req.body)
+    res.json({asd:"asd"})
+
+})
 
 module.exports = app;

@@ -22,11 +22,14 @@ let firstBoxPosition = { x: 237, y: 80 };
 
 let heldPiece = null;
 let heldLock = false;
+
+let totalLines = 0
+
 let map = {}; // Reads inputs
 let held = {};
 let holdTime = {};
-let DASTime = 10;
-let dasdelay = 5;
+let DASTime = 8;
+let dasdelay = 2;
 let DASTimer = dasdelay;
 
 addEventListener("keydown", function (event) {
@@ -63,12 +66,13 @@ function clearLines() {
     rowCounts[y]++;
   }
   for (let y in rowCounts) {
-    if (rowCounts[y] == 10) {
+    if (rowCounts[y] >= 10) {
       clearedRows.push(parseInt(y));
     }
   }
   linesCleared = clearedRows.length;
   linesToRemove = [];
+  linesToShift = []
   for (let i = 0; i < board.length; i++) {
     let point = board[i];
     let y = point[1];
@@ -76,13 +80,16 @@ function clearLines() {
     if (clearedRows.includes(y)) {
       linesToRemove.push(board[i]);
     } else if (y > Math.max(...clearedRows)) {
-      board[i][1] -= linesCleared;
+      linesToShift.push(board[i])
     }
   }
   linesToRemove.map((element) => board.splice(board.indexOf(element), 1));
+  linesToShift.map((element) => board[board.indexOf(element)][1] -= linesCleared);
+  totalLines += linesCleared
 }
-
+ctx.scale(1.9,1.9)
 function drawScreen() {
+  
   ctx.clearRect(0, 0, canvas.height, canvas.width);
   ctx.fillRect(0, 0, 320, 336);
   ctx.drawImage(boardImg, 0, 0);
@@ -225,11 +232,15 @@ function input() {
   }
 }
 function mainloop() {
+  if (queue.length - positionInQueue < 100){
+    generateAlot();
+  }
   if (currentPiece != null) input();
   if (currentPiece == null) {
     clearLines();
     positionInQueue++;
     currentPiece = new Piece(queue[positionInQueue]);
+    difficulty = Math.floor(totalLines/15) + 2
   }
 
   currentPiece.update();
@@ -249,3 +260,19 @@ async function generateAlot() {
 nextSeven();
 generateAlot();
 requestAnimationFrame(mainloop);
+let data = {
+  requestType: 'GetSessions',
+  account: 25,
+};
+const config = {
+  method: 'post',
+  data: data,
+  url: 'http://localhost:3000/test',
+};
+axios(config)
+      .then(res => {
+        console.log(res.data)
+      })
+      .catch(error => {
+        console.log(error);
+      });
