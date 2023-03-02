@@ -19,10 +19,19 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
-app.post('/test',(req,res)=>{
-    
-    console.log(req.body)
-    res.json({asd:"asd"})
+let pools = []
+
+app.post('/connectToPool',(req,res)=>{
+    let id = -1
+    if (pools.length > 0){
+        id = pools[0]
+        pools.splice(0,1)
+    }
+    else{
+        pools.push(req.body.peerID)
+        console.log(pools)
+    }
+    res.json({otherID:id})
 
 })
 

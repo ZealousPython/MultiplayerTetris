@@ -32,10 +32,10 @@ let T_Piece = [
   [2, 1],
 ];
 let O_Piece = [
-  [0, 0],
-  [0, 1],
   [1, 0],
   [1, 1],
+  [2, 0],
+  [2, 1],
 ];
 let I_Piece = [
   [0, 1],
@@ -181,7 +181,7 @@ class Piece {
     };
 
     this.onGround = false;
-    this.origin = piece == 6 ? [1.5, 1.5] : piece == 5 ? [0.5, 0.5] : [1, 1];
+    this.origin = piece == 6 ? [1.5, 1.5] : piece == 5 ? [1, 0.5] : [1, 1];
   }
   rotate(clockwise = false) {
     let rotatedPiece = [];
@@ -229,22 +229,26 @@ class Piece {
   isTspin(mapPos) {
     let mapPositionCenter = [
       mapPos[0] + this.origin[0],
-      mapPos[0] + this.origin[0],
+      mapPos[1] - this.origin[1],
     ];
     let corners = 0;
-    if (board.includes([mapPositionCenter[0] + 1, mapPositionCenter[1] + 1])) {
-      corners += 1;
+    for (let i = 0; i < board.length;i++){
+      if (board[i][0] == mapPositionCenter[0] + 1 && board[i][1] ==  mapPositionCenter[1] + 1) {
+        corners += 1;
+      }
+      if (board[i][0] == mapPositionCenter[0] - 1 && board[i][1] ==  mapPositionCenter[1] + 1) {
+        corners += 1;
+      }
+      if (board[i][0] == mapPositionCenter[0] + 1 && board[i][1] ==  mapPositionCenter[1] - 1) {
+        corners += 1;
+      }
+      if (board[i][0] == mapPositionCenter[0] - 1 && board[i][1] ==  mapPositionCenter[1] - 1) {
+        corners += 1;
+      }
     }
-    if (board.includes([mapPositionCenter[0] - 1, mapPositionCenter[1] + 1])) {
-      corners += 1;
-    }
-    if (board.includes([mapPositionCenter[0] + 1, mapPositionCenter[1] - 1])) {
-      corners += 1;
-    }
-    if (board.includes([mapPositionCenter[0] - 1, mapPositionCenter[1] - 1])) {
-      corners += 1;
-    }
-    return corners >= 3;
+
+    
+    return corners >= 3 && this.piece == 4;
   }
   setRotation(clockwise = false) {
     if (!this.locked) {
@@ -336,7 +340,6 @@ class Piece {
     this.shiftPiece(this.pieceData, this.mapPosition).map((point) => {
       board.push([...point, blocks[this.piece]]);
     });
-    if (this.tspin) console.log("TSPIN!!!");
   }
   update() {
     if (!this.locked) {
@@ -352,7 +355,6 @@ class Piece {
         if (!this.locked) {
           this.locked = true;
           this.place();
-          console.log("placed");
         }
       }
 
