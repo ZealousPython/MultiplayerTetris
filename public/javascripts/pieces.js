@@ -173,6 +173,7 @@ class Piece {
     this.locked = false;
     this.lockTime = 60 - difficulty * 1.9;
     this.lastMove = 0;
+    this.tspin = false;
     this.timers = {
       lockout: 9999999,
       lock: this.lockTime,
@@ -225,6 +226,26 @@ class Piece {
       }
     }
   }
+  isTspin(mapPos) {
+    let mapPositionCenter = [
+      mapPos[0] + this.origin[0],
+      mapPos[0] + this.origin[0],
+    ];
+    let corners = 0;
+    if (board.includes([mapPositionCenter[0] + 1, mapPositionCenter[1] + 1])) {
+      corners += 1;
+    }
+    if (board.includes([mapPositionCenter[0] - 1, mapPositionCenter[1] + 1])) {
+      corners += 1;
+    }
+    if (board.includes([mapPositionCenter[0] + 1, mapPositionCenter[1] - 1])) {
+      corners += 1;
+    }
+    if (board.includes([mapPositionCenter[0] - 1, mapPositionCenter[1] - 1])) {
+      corners += 1;
+    }
+    return corners >= 3;
+  }
   setRotation(clockwise = false) {
     if (!this.locked) {
       let rotatedPiece = this.rotate(clockwise);
@@ -238,6 +259,7 @@ class Piece {
         this.pieceData = rotatedPiece;
         this.timers.lock = this.lockTime;
         this.lastMove = 1;
+        this.tspin = this.isTspin(this.mapPosition);
       } else {
         let wallkickSet = clockwise ? wallkickClock : wallkickCounter;
         if (this.piece == 6)
@@ -250,11 +272,13 @@ class Piece {
           if (
             this.isValidPlacement(this.shiftPiece(rotatedPiece, newPosition))
           ) {
+            this.tspin = this.isTspin(newPosition);
             this.rotation = nextRotation;
             this.mapPosition = newPosition;
             this.timers.lock = this.lockTime;
             this.pieceData = rotatedPiece;
             this.lastMove = 1;
+
             break;
           }
         }
@@ -312,6 +336,7 @@ class Piece {
     this.shiftPiece(this.pieceData, this.mapPosition).map((point) => {
       board.push([...point, blocks[this.piece]]);
     });
+    if (this.tspin) console.log("TSPIN!!!");
   }
   update() {
     if (!this.locked) {

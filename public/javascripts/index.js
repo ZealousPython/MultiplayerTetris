@@ -23,7 +23,7 @@ let firstBoxPosition = { x: 237, y: 80 };
 let heldPiece = null;
 let heldLock = false;
 
-let totalLines = 0
+let totalLines = 0;
 
 let map = {}; // Reads inputs
 let held = {};
@@ -41,7 +41,6 @@ addEventListener("keyup", function (event) {
   delete map[event.key];
   delete held[event.key];
   delete holdTime[event.key];
-  console.log(event.key);
 });
 
 function nextSeven() {
@@ -72,24 +71,41 @@ function clearLines() {
   }
   linesCleared = clearedRows.length;
   linesToRemove = [];
-  linesToShift = []
+  linesToShift = [];
+  if (linesCleared > 0) {
+    console.log(clearedRows);
+    console.log(Math.max(...clearedRows));
+  }
   for (let i = 0; i < board.length; i++) {
     let point = board[i];
     let y = point[1];
 
     if (clearedRows.includes(y)) {
       linesToRemove.push(board[i]);
-    } else if (y > Math.max(...clearedRows)) {
-      linesToShift.push(board[i])
+    } else {
+      for (let e = 0; e < clearedRows.length; e++) {
+        if (clearedRows[e] < y) {
+          linesToShift.push(board[i]);
+          break;
+        }
+      }
     }
   }
   linesToRemove.map((element) => board.splice(board.indexOf(element), 1));
-  linesToShift.map((element) => board[board.indexOf(element)][1] -= linesCleared);
-  totalLines += linesCleared
+  linesToShift.map((element) => {
+    y = board[board.indexOf(element)][1];
+    numToShift = 0;
+    for (let i = 0; i < clearedRows.length; i++) {
+      if (clearedRows[i] < y) {
+        numToShift++;
+      }
+    }
+    board[board.indexOf(element)][1] -= numToShift;
+  });
+  totalLines += linesCleared;
 }
-ctx.scale(1.9,1.9)
+ctx.scale(1, 1);
 function drawScreen() {
-  
   ctx.clearRect(0, 0, canvas.height, canvas.width);
   ctx.fillRect(0, 0, 320, 336);
   ctx.drawImage(boardImg, 0, 0);
@@ -232,7 +248,7 @@ function input() {
   }
 }
 function mainloop() {
-  if (queue.length - positionInQueue < 100){
+  if (queue.length - positionInQueue < 100) {
     generateAlot();
   }
   if (currentPiece != null) input();
@@ -240,7 +256,7 @@ function mainloop() {
     clearLines();
     positionInQueue++;
     currentPiece = new Piece(queue[positionInQueue]);
-    difficulty = Math.floor(totalLines/15) + 2
+    difficulty = Math.floor(totalLines / 15) + 2;
   }
 
   currentPiece.update();
@@ -261,18 +277,18 @@ nextSeven();
 generateAlot();
 requestAnimationFrame(mainloop);
 let data = {
-  requestType: 'GetSessions',
+  requestType: "GetSessions",
   account: 25,
 };
 const config = {
-  method: 'post',
+  method: "post",
   data: data,
-  url: 'http://localhost:3000/test',
+  url: "http://localhost:3000/test",
 };
 axios(config)
-      .then(res => {
-        console.log(res.data)
-      })
-      .catch(error => {
-        console.log(error);
-      });
+  .then((res) => {
+    console.log(res.data);
+  })
+  .catch((error) => {
+    console.log(error);
+  });
