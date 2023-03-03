@@ -24,14 +24,20 @@ let pools = []
 app.post('/connectToPool',(req,res)=>{
     let id = -1
     if (pools.length > 0){
-        id = pools[0]
-        pools.splice(0,1)
+        for (let i = 0; i < pools.length;i++){
+            if (pools[i] != req.body.peerID){
+                id = pools[i]
+                pools.splice(i,1)
+            }
+        }
+        
     }
-    else{
+    else {
         pools.push(req.body.peerID)
         console.log(pools)
     }
     res.json({otherID:id})
+    console.log(pools)
 
 })
 

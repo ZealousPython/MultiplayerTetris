@@ -160,7 +160,7 @@ let blocks = [
   [3, 1],
 ];
 class Piece {
-  constructor(piece) {
+  constructor(piece, pieceData = null) {
     this.piece = piece;
     this.pieceData = Pieces[piece];
     this.mapPosition = [4, 20];
@@ -182,7 +182,11 @@ class Piece {
 
     this.onGround = false;
     this.origin = piece == 6 ? [1.5, 1.5] : piece == 5 ? [1, 0.5] : [1, 1];
+    if (pieceData != null){
+      Object.assign(this, pieceData)
+    }
   }
+  con
   rotate(clockwise = false) {
     let rotatedPiece = [];
     rotatedPiece = this.pieceData.map((point) => {
