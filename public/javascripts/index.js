@@ -209,7 +209,7 @@ function drawQueue(queue,ctx,positionInQueue) {
     drawPiece(false, x, y + 39 * i, queue[positionInQueue + 2 + i],ctx);
   }
 }
-function drawBoard(board,ctx,currentPiece) {
+function drawBoard(board,ctx,activePiece) {
   for (let i = 0; i < board.length; i++) {
     let x = pieceOrigin.x + board[i][0] * 16;
     let y = pieceOrigin.y + (19 - board[i][1]) * 16;
@@ -225,7 +225,7 @@ function drawBoard(board,ctx,currentPiece) {
       16
     );
   }
-  if (currentPiece != null) currentPiece.draw(ctx, pieceOrigin);
+  if (activePiece != null) activePiece.draw(ctx, pieceOrigin);
 }
 function drawPiece(big, x, y, piece,ctx) {
   if (big) {

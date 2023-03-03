@@ -12,7 +12,7 @@ let theirBoardState = {
     queue: null,
     queuePos:null
 }
-let ip = "10.127.20.50";
+let ip = "192.168.237.166";
 let peerID = null
 
 let peer = new Peer(options = { host: ip, port: '9000', path: '/myapp', debug: 2 })
